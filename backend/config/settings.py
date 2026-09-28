@@ -17,7 +17,14 @@ def env_list(name: str, default: str = "") -> list[str]:
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-insecure-change-me")
 DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() == "true"
-ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,.onrender.com,.railway.app")
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
+# On Vercel, trust the domains the platform reports for this deployment
+# (production, branch and per-deployment URLs), so no manual host config is needed.
+ALLOWED_HOSTS += [
+    host
+    for name in ("VERCEL_PROJECT_PRODUCTION_URL", "VERCEL_BRANCH_URL", "VERCEL_URL")
+    if (host := os.getenv(name))
+]
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
