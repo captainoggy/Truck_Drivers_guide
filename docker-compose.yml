@@ -1,0 +1,14 @@
+services:
+  # Internal only - reached through the frontend's nginx at /api
+  backend:
+    build: ./backend
+    env_file: .env
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "${APP_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
